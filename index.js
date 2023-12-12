@@ -10,12 +10,12 @@ const defaultConfig = require('tailwindcss/resolveConfig')(
   require('tailwindcss/defaultConfig')
 );
 
-const classConfig = {
-  category: 'Layout',
-  subcategory: 'Basic',
-  property: 'Columns',
-  variant: 'lg',
-};
+// const classConfig = {
+//   category: 'Layout',
+//   subcategory: 'Basic',
+//   property: 'Columns',
+//   variant: 'lg',
+// };
 
 function normalizeProperties(input) {
   if (typeof input !== 'object') return input;
@@ -58,6 +58,7 @@ function getUtilities(plugin, { includeNegativeValues = false } = {}) {
     addComponents: () => {},
     corePlugins: () => true,
     prefix: (x) => x,
+    config: () => defaultConfig,
     addUtilities,
     theme: (key, defaultValue) => dlv(defaultConfig.theme, key, defaultValue),
     matchUtilities: (matches, { values, supportsNegativeValues } = {}) => {
@@ -93,7 +94,7 @@ function getUtilities(plugin, { includeNegativeValues = false } = {}) {
               return {
                 [NameClass.default(name, modifier)
                   .replace('.', '')
-                  .replaceAll(/\\/g, '')]: classConfig,
+                  .replaceAll(/\\/g, '')]: NameClass.default(name, modifier),
               };
             })
             .filter(Boolean);
@@ -126,9 +127,9 @@ function getUtilities(plugin, { includeNegativeValues = false } = {}) {
 
   const utilitiesKeys = Object.keys(utilities);
   if (utilitiesKeys.length && utilitiesKeys[0].startsWith('.')) {
-    const output = {};
+    const output = [];
     for (item in utilities) {
-      output[item.replace('.', '').replaceAll(/\\/g, '')] = classConfig;
+      output.push(item.replace('.', '').replaceAll(/\\/g, ''))
     }
 
     return output;
@@ -149,14 +150,15 @@ function getUtilities(plugin, { includeNegativeValues = false } = {}) {
   const all = {};
   getPlugins().map((plugin) => {
   console.log(plugin)
+  
     let pluginFn = corePlugins.corePlugins[plugin];
     all[plugin] = getUtilities(pluginFn);
   });
 
-  let pluginFn = corePlugins.corePlugins['flexDirection'];
-  const result = getUtilities(pluginFn);
+  // let pluginFn = corePlugins.corePlugins['flexDirection'];
+  // const result = getUtilities(all);
 
-  console.log(result);
+  console.log(all);
   //res.send(result);
 // });
 // 
